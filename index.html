@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>X Multiplies (GSI Tiles X finds.jp)</title>
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0"/>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<script src="http://handygeospatial.github.io/mapsites/js/leaflet-hash.js"></script>
+<script src="http://handygeospatial.github.io/mapsites/js/TileLayer.GeoJSON.js"></script>
+<script src="http://handygeospatial.github.io/mapsites/js/corslite.js"></script>
+<style>
+body {padding: 0; margin: 0}
+html, body, #mapdiv {height: 100%; width: 100%;}
+.leaflet-container {background: #fff;}
+</style>
+</head>
+<body>
+<div id="mapdiv">
+<script>
+var layer = L.tileLayer.canvas();
+layer.drawTile = function(canvas, tilePoint, z) {
+  var ctx = canvas.getContext('2d');
+  ctx.globalCompositeOperation = 'multiply';
+  var zxy = z + '/' + tilePoint.x + '/' + tilePoint.y;
+  var i1 = new Image();
+  i1.src = 'http://cyberjapandata.gsi.go.jp/xyz/std/' + zxy + '.png';
+  i1.onload = function() {ctx.drawImage(i1, 0, 0);};
+  var i2 = new Image();
+  i2.src = 'http://www.finds.jp/ws/tmc/1.0.0/Kanto_Rapid-900913-L/' +
+    zxy + '.png';
+  i2.onload = function() {ctx.drawImage(i2, 0, 0);};
+};
+
+var map = L.map('mapdiv', { //14/35.7085/139.8504
+  center: [35.7085, 139.8504], zoom: 14,
+  layers: [layer]});
+var hash = L.hash(map);
+</script>
+</body>
+</html>
